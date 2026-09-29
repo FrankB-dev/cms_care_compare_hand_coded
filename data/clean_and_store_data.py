@@ -124,7 +124,7 @@ if __name__ == '__main__':
         "Unit of Measure": "TEXT",
     }
 
-    # 4. Write to the database
+    # write to the database
     df.to_sql(
         name="complications_and_deaths_national",
         con=conn,
