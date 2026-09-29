@@ -41,6 +41,8 @@ even for columns with numerical values.
 
 Start Date and End Date vary within a datafile.
 
+Start Date and End Date are Month/Day/Year.
+
 Most rates are % (inclucing HWB), except PSI_4, which is deaths per 1,000 eligible
 surgical cases.  PSI_4 is "Death rate among surgical inpatients wih serious treatable 
 complications."
