@@ -30,21 +30,21 @@ def update_graph(value):
     query = """
         SELECT 
             [National Rate],
-            [End Date YMD],
+            [End Date],
             [Unit of Measure]
         FROM
             complications_and_deaths_national
         WHERE
             [Measure Description] = ?
-        ORDER BY [End Date YMD]
+        ORDER BY [End Date]
     """ 
     cursor.execute(query, (value,))
     results = cursor.fetchall()
     df = pd.DataFrame(
-        columns=['National Rate', 'End Date Str', 'Unit of Measure'],
+        columns=['National Rate', 'End Date', 'Unit of Measure'],
         data=results
     )
-    df['End Date'] = pd.to_datetime(df['End Date Str'])
+    df['End Date'] = pd.to_datetime(df['End Date'])
     uom = df['Unit of Measure'].unique()[0]
     return px.line(df, x='End Date', y='National Rate', 
                    labels={"National Rate": f"National Rate, {uom}"},
