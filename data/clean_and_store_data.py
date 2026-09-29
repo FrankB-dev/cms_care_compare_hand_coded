@@ -44,6 +44,20 @@ def map_measure_id_to_description_and_unit(df):
     return df
 
 
+def convert_date_to_YMD(val):
+    month = val.split('/')[0]
+    day = val.split('/')[1]
+    year = val.split('/')[2]
+    ymd = f"{year}/{month}/{day}"
+    return ymd
+
+
+def add_date_columns_YMD(df):
+    df['Start Date YMD'] = df['Start Date'].apply(convert_date_to_YMD)
+    df['End Date YMD'] = df['End Date'].apply(convert_date_to_YMD)
+    return df
+
+
 def data_extraction(filepaths):
     df_list = []
     for fp in filepaths:
@@ -86,6 +100,7 @@ if __name__ == '__main__':
     
     # feature engineering
     df = map_measure_id_to_description_and_unit(df)
+    df = add_date_columns_YMD(df)
 
     # load into SQLite database
     conn = sqlite3.connect('care_compare.db')
@@ -102,7 +117,9 @@ if __name__ == '__main__':
         "Start Date": "TEXT",
         "End Date": "TEXT",
         "Measure Description": "TEXT",
-        "Unit of Measure": "TEXT"
+        "Unit of Measure": "TEXT",
+        "Start Date YMD": "TEXT",
+        "End Date YMD": "TEXT"
     }
 
     # 4. Write to the database
