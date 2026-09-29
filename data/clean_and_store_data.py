@@ -6,7 +6,7 @@ import sqlite3
 def map_measure_id_to_description_and_unit(df):
     columns = ['Measure ID', 'Measure Description', 'Unit of Measure']
     data = [
-        ['COMP_HIP_KNEE', 'Hip/Knee replacement complications', 'Percent (%)'],
+        ['COMP_HIP_KNEE', 'Hip/knee replacement complications', 'Percent (%)'],
         ['Hybrid_HWM',	'Hospital-Wide Mortality', 'Percent (%)'],
         ['MORT_30_AMI',	'Heart Attack death rate', 'Percent (%)'],
         ['MORT_30_CABG', 'CABG death rate', 'Percent (%)'],
@@ -44,7 +44,7 @@ def map_measure_id_to_description_and_unit(df):
     return df
 
 
-def convert_date_to_YMD(val):
+def MDY_to_YMD(val):
     month = val.split('/')[0]
     day = val.split('/')[1]
     year = val.split('/')[2]
@@ -52,9 +52,9 @@ def convert_date_to_YMD(val):
     return ymd
 
 
-def add_date_columns_YMD(df):
-    df['Start Date YMD'] = df['Start Date'].apply(convert_date_to_YMD)
-    df['End Date YMD'] = df['End Date'].apply(convert_date_to_YMD)
+def switch_date_columns_to_YMD(df):
+    df['Start Date'] = df['Start Date'].apply(MDY_to_YMD)
+    df['End Date'] = df['End Date'].apply(MDY_to_YMD)
     return df
 
 
@@ -91,16 +91,20 @@ if __name__ == '__main__':
         '2026/Complications_and_Deaths-National.csv',
     ]
 
-    # ETL process (Extract-Transform-Load)
+
+    # ETL pipeline (Extract-Transform-Load)
     # extraction 
     df = data_extraction(filepaths)  
 
+
     # cleaning 
     df = data_cleaning(df) 
-    
+
+
     # feature engineering
     df = map_measure_id_to_description_and_unit(df)
-    df = add_date_columns_YMD(df)
+    df = switch_date_columns_to_YMD(df)
+
 
     # load into SQLite database
     conn = sqlite3.connect('care_compare.db')
@@ -118,8 +122,6 @@ if __name__ == '__main__':
         "End Date": "TEXT",
         "Measure Description": "TEXT",
         "Unit of Measure": "TEXT",
-        "Start Date YMD": "TEXT",
-        "End Date YMD": "TEXT"
     }
 
     # 4. Write to the database
